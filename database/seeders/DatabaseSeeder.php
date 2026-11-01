@@ -45,12 +45,14 @@ class DatabaseSeeder extends Seeder
                 'phone' => '0712345678',
                 'email' => 'john@gmail.com',
                 'address' => 'Siaya, Kenya',
+                'location' => 'Kenya',
             ],
             [
                 'name' => 'Mary Akinyi',
                 'phone' => '0798765432',
                 'email' => 'mary@gmail.com',
-                'address' => 'Kisumu, Kenya'
+                'address' => 'Kisumu, Kenya',
+                'location' => 'Kenya',
             ]
         ]);
 

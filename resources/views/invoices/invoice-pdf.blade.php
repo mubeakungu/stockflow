@@ -24,6 +24,8 @@
         .status-paid { background: #d4edda; color: #155724; }
         .status-partial { background: #fff3cd; color: #856404; }
         .status-due { background: #f8d7da; color: #721c24; }
+        .kra { margin-top: 18px; border: 1px solid #ddd; }
+        .kra td { padding: 10px; vertical-align: top; font-size: 10px; line-height: 1.6; word-break: break-all; }
         .note { margin-top: 24px; text-align: center; font-size: 10px; color: #777; }
     </style>
 </head>
@@ -67,6 +69,7 @@
             {{ config('shop.address_line2') }}<br>
             {{ config('shop.email') }}<br>
             {{ config('shop.phone') }}
+            @if (config('shop.kra_pin'))<br><strong>PIN:</strong> {{ config('shop.kra_pin') }}@endif
         </td>
         <td class="r">
             <strong>Invoiced To:</strong><br>
@@ -74,6 +77,7 @@
             {{ optional($invoice->customer)->address }}<br>
             @if (optional($invoice->customer)->location){{ $invoice->customer->location }}<br>@endif
             {{ optional($invoice->customer)->phone }}
+            @if (optional($invoice->customer)->kra_pin)<br><strong>PIN:</strong> {{ $invoice->customer->kra_pin }}@endif
         </td>
     </tr>
 </table>
@@ -107,6 +111,25 @@
         <tr><td colspan="5" class="r">Due:</td><td class="r">@ksh($invoice->due)</td></tr>
     </tfoot>
 </table>
+
+@if ($invoice->isKraSigned())
+    <table class="kra">
+        <tr>
+            <td>
+                <strong>KRA eTIMS</strong><br>
+                @if ($invoice->kra_cu_serial_no)CU Serial No: {{ $invoice->kra_cu_serial_no }}<br>@endif
+                CU Invoice No: {{ $invoice->kra_cu_invoice_no }}<br>
+                @if ($invoice->kra_signed_at)Signed: {{ $invoice->kra_signed_at->format('d/m/Y H:i:s') }}<br>@endif
+                @if ($invoice->kra_internal_data)Internal Data: {{ $invoice->kra_internal_data }}<br>@endif
+                @if ($invoice->kra_receipt_signature)Receipt Signature: {{ $invoice->kra_receipt_signature }}@endif
+            </td>
+            <td class="r" style="width: 130px;">
+                <img src="{{ \App\Support\QrCode::dataUri($invoice->kra_qr_url, 120) }}" width="110" height="110" alt=""><br>
+                <small>Scan to verify with KRA</small>
+            </td>
+        </tr>
+    </table>
+@endif
 
 <p class="note"><strong>NOTE:</strong> This is a computer generated receipt and does not require a physical signature.</p>
 </body>

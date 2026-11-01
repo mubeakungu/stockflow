@@ -23,6 +23,10 @@
         .item-detail td { padding-bottom: 1mm; }
         .totals td { padding: 0.6mm 0; }
         .grand td { font-size: 15px; font-weight: bold; }
+        .kra td { font-size: 11px; }
+        .kra-code { font-size: 10px; word-break: break-all; margin-top: 1mm; }
+        .qr { margin: 2mm 0 1mm; }
+        .qr svg { width: 38mm; height: 38mm; }
         .status { display: inline-block; border: 1px solid #000; padding: 0.5mm 2mm; font-weight: bold; text-transform: uppercase; }
         .actions { width: 80mm; margin: 0 auto 16px; display: flex; gap: 8px; }
         .actions a, .actions button {
@@ -54,6 +58,9 @@
         <div>{{ config('shop.address_line2') }}</div>
         <div>Tel: {{ config('shop.phone') }}</div>
         <div>{{ config('shop.email') }}</div>
+        @if (config('shop.kra_pin'))
+            <div class="bold">PIN: {{ config('shop.kra_pin') }}</div>
+        @endif
     </div>
 
     <hr class="rule">
@@ -67,6 +74,9 @@
             <tr><td>Customer</td><td class="right">{{ $invoice->customer->name }}</td></tr>
             @if ($invoice->customer->phone)
                 <tr><td>Phone</td><td class="right">{{ $invoice->customer->phone }}</td></tr>
+            @endif
+            @if ($invoice->customer->kra_pin)
+                <tr><td>Customer PIN</td><td class="right">{{ $invoice->customer->kra_pin }}</td></tr>
             @endif
         @endif
     </table>
@@ -98,6 +108,30 @@
     </table>
 
     <div class="center" style="margin-top: 2mm;"><span class="status">{{ $invoice->status }}</span></div>
+
+    <hr class="rule">
+    @if ($invoice->isKraSigned())
+        <div class="center bold">KRA eTIMS</div>
+        <table class="kra">
+            @if ($invoice->kra_cu_serial_no)
+                <tr><td>CU Serial No</td><td class="right">{{ $invoice->kra_cu_serial_no }}</td></tr>
+            @endif
+            <tr><td>CU Invoice No</td><td class="right">{{ $invoice->kra_cu_invoice_no }}</td></tr>
+            @if ($invoice->kra_signed_at)
+                <tr><td>Signed</td><td class="right">{{ $invoice->kra_signed_at->format('d/m/Y H:i:s') }}</td></tr>
+            @endif
+        </table>
+        @if ($invoice->kra_internal_data)
+            <div class="kra-code">Internal Data:<br>{{ $invoice->kra_internal_data }}</div>
+        @endif
+        @if ($invoice->kra_receipt_signature)
+            <div class="kra-code">Receipt Signature:<br>{{ $invoice->kra_receipt_signature }}</div>
+        @endif
+        <div class="center qr">{!! \App\Support\QrCode::svg($invoice->kra_qr_url, 150) !!}</div>
+        <div class="center">Scan to verify with KRA</div>
+    @else
+        <div class="center">KRA eTIMS: pending</div>
+    @endif
 
     <hr class="rule">
     <div class="center">{{ config('shop.receipt_footer') }}</div>

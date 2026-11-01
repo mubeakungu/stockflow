@@ -14,6 +14,7 @@ class Customer extends Model
         'name',
         'phone',
         'email',
+        'kra_pin',
         'address',
         'location',
     ];

@@ -38,7 +38,10 @@ class CustomerController extends Controller
             'phone' => 'required',
             'email' => 'required',
             'address' => 'required',
-            'location' => 'required'
+            'location' => 'required',
+            'kra_pin' => ['nullable', 'regex:/^[A-Za-z]\d{9}[A-Za-z]$/'],
+        ], [
+            'kra_pin.regex' => 'KRA PIN must look like A123456789B (a letter, 9 digits, a letter).',
         ]);
 
         $customer = new Customer();
@@ -47,6 +50,7 @@ class CustomerController extends Controller
         $customer->email = $request->email;
         $customer->address = $request->address;
         $customer->location = $request->location;
+        $customer->kra_pin = $request->filled('kra_pin') ? strtoupper($request->kra_pin) : null;
         $customer->save();
         return redirect()->route('customers.index');
     }
@@ -81,7 +85,10 @@ class CustomerController extends Controller
             'phone' => 'required',
             'email' => 'required',
             'address' => 'required',
-            'location' => 'required'
+            'location' => 'required',
+            'kra_pin' => ['nullable', 'regex:/^[A-Za-z]\d{9}[A-Za-z]$/'],
+        ], [
+            'kra_pin.regex' => 'KRA PIN must look like A123456789B (a letter, 9 digits, a letter).',
         ]);
 
         $customer->name = $request->name;
@@ -89,6 +96,7 @@ class CustomerController extends Controller
         $customer->email = $request->email;
         $customer->address = $request->address;
         $customer->location = $request->location;
+        $customer->kra_pin = $request->filled('kra_pin') ? strtoupper($request->kra_pin) : null;
         $customer->update();
         return redirect()->route('customers.index');
     }

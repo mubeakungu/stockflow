@@ -60,6 +60,7 @@
                         {{ config('shop.address_line2') }}<br />
                         {{ config('shop.email') }}<br />
                         {{ config('shop.phone') }}
+                        @if (config('shop.kra_pin'))<br /><strong>PIN:</strong> {{ config('shop.kra_pin') }}@endif
                     </address>
                 </div>
                 <div class="col-6 text-end"> <strong>Invoiced To:</strong>
@@ -68,6 +69,7 @@
                         {{ $invoice->customer->address }}<br />
                         {{ $invoice->customer->location }}<br />
                         {{ $invoice->customer->phone }}
+                        @if ($invoice->customer->kra_pin)<br /><strong>PIN:</strong> {{ $invoice->customer->kra_pin }}@endif
                     </address>
                 </div>
             </div>
@@ -117,6 +119,24 @@
                     </div>
                 </div>
             </div>
+            @if ($invoice->isKraSigned())
+                <div class="row align-items-center mt-3">
+                    <div class="col-sm-9 text-1" style="word-break: break-all;">
+                        <strong>KRA eTIMS</strong><br />
+                        @if ($invoice->kra_cu_serial_no)CU Serial No: {{ $invoice->kra_cu_serial_no }}<br />@endif
+                        CU Invoice No: {{ $invoice->kra_cu_invoice_no }}<br />
+                        @if ($invoice->kra_signed_at)Signed: {{ $invoice->kra_signed_at->format('d/m/Y H:i:s') }}<br />@endif
+                        @if ($invoice->kra_internal_data)Internal Data: {{ $invoice->kra_internal_data }}<br />@endif
+                        @if ($invoice->kra_receipt_signature)Receipt Signature: {{ $invoice->kra_receipt_signature }}@endif
+                    </div>
+                    <div class="col-sm-3 text-center">
+                        {!! \App\Support\QrCode::svg($invoice->kra_qr_url, 120) !!}
+                        <div class="text-1">Scan to verify with KRA</div>
+                    </div>
+                </div>
+            @else
+                <p class="text-1 text-muted mt-3 mb-0">KRA eTIMS: pending</p>
+            @endif
         </main>
         <!-- Footer -->
         <footer class="text-center mt-4">
