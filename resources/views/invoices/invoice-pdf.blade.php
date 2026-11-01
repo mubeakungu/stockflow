@@ -54,7 +54,7 @@
         <td class="r"><strong>Invoice No:</strong> {{ $invoice->invoice_no }}</td>
     </tr>
     <tr>
-        <td></td>
+        <td><strong>Payment:</strong> {{ $invoice->paymentMethodLabel() }}@if ($invoice->payment_reference) ({{ $invoice->payment_reference }})@endif</td>
         <td class="r"><span class="status status-{{ $invoice->status }}">{{ $invoice->status }}</span></td>
     </tr>
 </table>

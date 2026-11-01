@@ -36,6 +36,7 @@
                     <th>Customer</th>
                     <th>Total</th>
                     <th>Status</th>
+                    <th>Payment</th>
                     <th>Due</th>
                     <th>Paid</th>
                     <th>Date</th>
@@ -50,6 +51,7 @@
                     <td>{{ optional($invoice->customer)->name ?? 'N/A' }}</td>
                     <td>{{ $invoice->total }}</td>
                     <td>{{ ucfirst($invoice->status) }}</td>
+                    <td>{{ $invoice->paymentMethodLabel() }}</td>
                     <td>{{ $invoice->due }}</td>
                     <td>{{ $invoice->total - $invoice->due }}</td>
                     <td>{{ \Carbon\Carbon::parse($invoice->created_at)->format('d/m/y') }}</td>
@@ -79,6 +81,7 @@
                     <th>Customer</th>
                     <th>Total</th>
                     <th>Status</th>
+                    <th>Payment</th>
                     <th>Due</th>
                     <th>Paid</th>
                     <th>Date</th>

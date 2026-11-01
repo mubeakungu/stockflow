@@ -9,6 +9,7 @@ use App\Models\InvoiceItem;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class InvoiceController extends Controller
 {
@@ -50,6 +51,8 @@ class InvoiceController extends Controller
             "total" => "required",
             "due_amount" => "required",
             "products" => "required",
+            "payment_method" => ["required", Rule::in(array_keys(Invoice::PAYMENT_METHODS))],
+            "payment_reference" => ["nullable", "string", "max:50"],
         ]);
 
 
@@ -66,6 +69,10 @@ class InvoiceController extends Controller
         $invoice->customer_id = $request->customer_id;
         $invoice->total = $request->total;
         $invoice->due = $request->due_amount;
+        $invoice->payment_method = $request->payment_method;
+        $invoice->payment_reference = $request->filled('payment_reference')
+            ? strtoupper(trim($request->payment_reference))
+            : null;
 
         // Automatically calculate status based on due amount
         if ($request->due_amount == 0) {

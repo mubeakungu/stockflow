@@ -49,6 +49,8 @@
             <div class="row">
                 <div class="col-sm-6"><strong>Date:</strong> {{ $invoice->created_at->format('d/m/y') }}</div>
                 <div class="col-sm-6 text-sm-end"> <strong>Invoice No:</strong> {{ $invoice->invoice_no }}</div>
+                <div class="col-sm-6"><strong>Payment:</strong> {{ $invoice->paymentMethodLabel() }}@if ($invoice->payment_reference) ({{ $invoice->payment_reference }})@endif</div>
+                <div class="col-sm-6 text-sm-end"><strong>Status:</strong> {{ ucfirst($invoice->status) }}</div>
 
             </div>
             <hr>

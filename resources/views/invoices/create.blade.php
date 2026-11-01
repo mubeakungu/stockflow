@@ -162,6 +162,20 @@
                             x-on:blur="setStatus()">
                     </div>
                     <div class="form-group">
+                        <label for="payment_method">Payment Method</label>
+                        <select name="payment_method" id="payment_method" class="form-control" required
+                            onchange="onPaymentMethodChange(this.value)">
+                            @foreach (\App\Models\Invoice::PAYMENT_METHODS as $value => $label)
+                                <option value="{{ $value }}" {{ old('payment_method', 'cash') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group" id="payment_reference_group" style="display: none;">
+                        <label for="payment_reference" id="payment_reference_label">Reference</label>
+                        <input type="text" class="form-control" id="payment_reference" name="payment_reference"
+                            value="{{ old('payment_reference') }}" maxlength="50" style="text-transform: uppercase;">
+                    </div>
+                    <div class="form-group">
                         <label for="status">Payment Status<small class="text-info">[Ksh]</small></label>
                         <select name="status" id="status" x-ref="status" class="form-control" readonly>
                             <option></option>
@@ -211,6 +225,34 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+    // Show the right reference field for the chosen payment method.
+    // Credit = sale on account, so default the paid amount to 0 (a deposit can still be typed in).
+    function onPaymentMethodChange(method) {
+        const group = document.getElementById('payment_reference_group');
+        const label = document.getElementById('payment_reference_label');
+        const input = document.getElementById('payment_reference');
+        const labels = { mpesa: 'M-Pesa transaction code', bank_transfer: 'Bank reference' };
+        const placeholders = { mpesa: 'e.g. SKL4ABC123', bank_transfer: 'e.g. FT2611010042' };
+
+        if (labels[method]) {
+            group.style.display = '';
+            label.textContent = labels[method];
+            input.placeholder = placeholders[method];
+        } else {
+            group.style.display = 'none';
+            input.value = '';
+        }
+
+        if (method === 'credit' && $('#total').val()) {
+            $('#paid').val(0);
+            $('#due_amount').val($('#total').val());
+            $('#status').val('due').trigger('change');
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        onPaymentMethodChange(document.getElementById('payment_method').value);
+    });
+
     function calculateTotal(){
         let total = 0;
         let inputFields = document.querySelectorAll('input[id^=\'subTotal-\']');

@@ -102,6 +102,10 @@
         <tr><td>Items</td><td class="right">{{ $products->sum('quantity') }}</td></tr>
         <tr class="grand"><td>TOTAL</td><td class="right">@ksh($invoice->total)</td></tr>
         <tr><td>Paid</td><td class="right">@ksh($paid)</td></tr>
+        <tr><td>Payment</td><td class="right">{{ $invoice->paymentMethodLabel() }}</td></tr>
+        @if ($invoice->payment_reference)
+            <tr><td>{{ $invoice->payment_method === 'mpesa' ? 'M-Pesa code' : 'Reference' }}</td><td class="right">{{ $invoice->payment_reference }}</td></tr>
+        @endif
         @if ($invoice->due > 0)
             <tr class="bold"><td>Balance due</td><td class="right">@ksh($invoice->due)</td></tr>
         @endif

@@ -38,6 +38,7 @@ This system serves as a **foundation for more advanced enterprise systems**, inc
 ### 🧾 Sales & Invoice System
 - Create invoices with multiple products
 - Automatic total calculations
+- Payment methods: Cash, M-Pesa (with transaction code), Bank transfer (with reference) and Credit
 - Download invoices as PDF
 - Print 80mm thermal receipts (Invoice → **Receipt (80mm)**, or **Receipt** in the invoice list)
 
@@ -168,4 +169,9 @@ Every sale creates an invoice. From the invoice page you can:
 - **Receipt (80mm)** opens a thermal-printer receipt and the print dialog. Choose your receipt printer, set the paper to 80mm and turn off headers/footers and margins.
 
 The shop name comes from **Settings**. To set the address, phone, email and receipt footer, uncomment the `SHOP_*` lines in `.env`.
+
+## 🇰🇪 KRA eTIMS
+Receipts and invoices print your KRA PIN (set `SHOP_KRA_PIN` in `.env`) and the customer's PIN, if one is saved on the customer.
+
+Each invoice also has fields for the data KRA eTIMS returns when a sale is sent to it: the CU serial and invoice numbers, internal data, receipt signature and the verification link. Once those are filled, the receipt shows them along with a QR code customers can scan to check the sale with KRA. Until then it shows "KRA eTIMS: pending". **StockFlow does not send sales to eTIMS yet**, so receipts are not KRA-compliant until that connection is added.
 
