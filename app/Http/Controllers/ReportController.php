@@ -10,6 +10,7 @@ class ReportController extends Controller
 {
     public function index()
     {
+        $range = $to = $from = null;
         if (isset($_GET['range'])) {
             $range = $_GET['range'];
         };
