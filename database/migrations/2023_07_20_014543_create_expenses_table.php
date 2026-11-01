@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('type_id')->constrained('types')->onDelete('restrict');
+            $table->foreignId('type_id');
             $table->integer('amount');
             $table->timestamps();
         });

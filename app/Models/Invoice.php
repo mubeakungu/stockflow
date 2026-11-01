@@ -11,6 +11,13 @@ class Invoice extends Model
 {
     use HasFactory;
 
+    public const PAYMENT_METHODS = [
+        'cash' => 'Cash',
+        'mpesa' => 'M-Pesa',
+        'bank_transfer' => 'Bank transfer',
+        'credit' => 'Credit',
+    ];
+
     protected $fillable = [
         'invoice_no',
         'customer_id',
@@ -18,7 +25,32 @@ class Invoice extends Model
         'due',
         'status',
         'profit',
+        'payment_method',
+        'payment_reference',
+        'kra_cu_invoice_no',
+        'kra_cu_serial_no',
+        'kra_receipt_signature',
+        'kra_internal_data',
+        'kra_qr_url',
+        'kra_signed_at',
     ];
+
+    protected $casts = [
+        'kra_signed_at' => 'datetime',
+    ];
+
+    public function paymentMethodLabel(): string
+    {
+        return self::PAYMENT_METHODS[$this->payment_method] ?? ucfirst((string) $this->payment_method);
+    }
+
+    /**
+     * True once KRA eTIMS has signed this sale and returned its QR link.
+     */
+    public function isKraSigned(): bool
+    {
+        return filled($this->kra_cu_invoice_no) && filled($this->kra_qr_url);
+    }
 
     public function customer(): BelongsTo
     {

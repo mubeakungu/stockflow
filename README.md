@@ -38,7 +38,9 @@ This system serves as a **foundation for more advanced enterprise systems**, inc
 ### 🧾 Sales & Invoice System
 - Create invoices with multiple products
 - Automatic total calculations
-- Export invoices as PDF
+- Payment methods: Cash, M-Pesa (with transaction code), Bank transfer (with reference) and Credit
+- Download invoices as PDF
+- Print 80mm thermal receipts (Invoice → **Receipt (80mm)**, or **Receipt** in the invoice list)
 
 ### 👥 Customer Management
 - Store customer data
@@ -104,36 +106,72 @@ This system serves as a **foundation for more advanced enterprise systems**, inc
 
 ## ⚙️ Installation Guide
 
-### 1. Clone Repository
+### Requirements
+- PHP 8.1 or newer (8.3 tested) with the `pdo_mysql`, `mbstring`, `xml`, `gd` and `zip` extensions
+- Composer
+- MySQL 8 or MariaDB 10+
+- An internet connection in the browser (some pages load jQuery plugins from CDNs)
+
+Node/npm are **not** needed to run the app: the pages use the prebuilt CSS/JS in `public/`.
+
+### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/stockflow-pos.git
-cd stockflow-pos
+git clone https://github.com/mubeakungu/stockflow.git
+cd stockflow
 ```
 
-2. Install Dependencies
+### 2. Install PHP dependencies
+```bash
 composer install
-npm install
+```
 
-3. Setup Environment
+### 3. Create the environment file
+```bash
 cp .env.example .env
 php artisan key:generate
+```
 
-4. Configure Database
-
-Update .env:
-
+### 4. Create the database
+In MySQL:
+```sql
+CREATE DATABASE pos_system;
+```
+Then set your MySQL login in `.env`:
+```
 DB_DATABASE=pos_system
 DB_USERNAME=root
-DB_PASSWORD=
+DB_PASSWORD=your_mysql_password
+```
 
-5. Run Migrations & Seed Data
+### 5. Create the tables and sample data
+```bash
 php artisan migrate --seed
+php artisan storage:link
+```
+To wipe everything and start again: `php artisan migrate:fresh --seed`.
 
-6. Run Application
+### 6. Start the app
+```bash
 php artisan serve
-npm run dev
+```
+Open http://127.0.0.1:8000 in your browser.
 
+## 🔑 Default Login
+- Email: `admin@example.com`
+- Password: `password`
 
-🔑 Default Login
-Email: admin@example.com
-Password: password
+The sample data includes 4 products (cement, paint, iron sheets, a hammer), 2 customers and 2 suppliers, so you can create an invoice straight away under **Invoices → Create New Invoice**.
+
+## 🧾 Receipts
+Every sale creates an invoice. From the invoice page you can:
+- **Print** the full A4 invoice
+- **Download PDF** of the invoice
+- **Receipt (80mm)** opens a thermal-printer receipt and the print dialog. Choose your receipt printer, set the paper to 80mm and turn off headers/footers and margins.
+
+The shop name comes from **Settings**. To set the address, phone, email and receipt footer, uncomment the `SHOP_*` lines in `.env`.
+
+## 🇰🇪 KRA eTIMS
+Receipts and invoices print your KRA PIN (set `SHOP_KRA_PIN` in `.env`) and the customer's PIN, if one is saved on the customer.
+
+Each invoice also has fields for the data KRA eTIMS returns when a sale is sent to it: the CU serial and invoice numbers, internal data, receipt signature and the verification link. Once those are filled, the receipt shows them along with a QR code customers can scan to check the sale with KRA. Until then it shows "KRA eTIMS: pending". **StockFlow does not send sales to eTIMS yet**, so receipts are not KRA-compliant until that connection is added.
+

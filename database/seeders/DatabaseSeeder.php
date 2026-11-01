@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
+            'role' => 'admin',
             'password' => Hash::make('password'),
         ]);
 
@@ -44,12 +45,14 @@ class DatabaseSeeder extends Seeder
                 'phone' => '0712345678',
                 'email' => 'john@gmail.com',
                 'address' => 'Siaya, Kenya',
+                'location' => 'Kenya',
             ],
             [
                 'name' => 'Mary Akinyi',
                 'phone' => '0798765432',
                 'email' => 'mary@gmail.com',
-                'address' => 'Kisumu, Kenya'
+                'address' => 'Kisumu, Kenya',
+                'location' => 'Kenya',
             ]
         ]);
 
@@ -86,6 +89,12 @@ class DatabaseSeeder extends Seeder
                 'description' => 'Strong roofing sheet',
                 'brand_id' => '3',
                 'image' => 'iron.jpg',
+            ],
+            [
+                'name' => 'Claw Hammer 16oz',
+                'description' => 'Steel claw hammer',
+                'brand_id' => '3',
+                'image' => 'hammer.jpg',
             ]
         ]);
 
@@ -138,15 +147,15 @@ class DatabaseSeeder extends Seeder
                 'product_id' => '1'
             ],
             [
-                'category_id' => '1',
+                'category_id' => '2',
                 'product_id' => '2'
             ],
             [
-                'category_id' => '2',
+                'category_id' => '3',
                 'product_id' => '3'
             ],
             [
-                'category_id' => '2',
+                'category_id' => '4',
                 'product_id' => '4'
             ]
         ]);

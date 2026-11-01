@@ -49,6 +49,8 @@
             <div class="row">
                 <div class="col-sm-6"><strong>Date:</strong> {{ $invoice->created_at->format('d/m/y') }}</div>
                 <div class="col-sm-6 text-sm-end"> <strong>Invoice No:</strong> {{ $invoice->invoice_no }}</div>
+                <div class="col-sm-6"><strong>Payment:</strong> {{ $invoice->paymentMethodLabel() }}@if ($invoice->payment_reference) ({{ $invoice->payment_reference }})@endif</div>
+                <div class="col-sm-6 text-sm-end"><strong>Status:</strong> {{ ucfirst($invoice->status) }}</div>
 
             </div>
             <hr>
@@ -56,11 +58,11 @@
                 <div class="col-6"> <strong>Pay To:</strong>
                     <address>
                         {{ $settings->shop_name }}<br />
-                        40600 <br />
-                        Siaya, Siaya-Road<br />
-                        berrylwasonga@gmail.com
-                        <br>
-                        0792827238
+                        {{ config('shop.address_line1') }}<br />
+                        {{ config('shop.address_line2') }}<br />
+                        {{ config('shop.email') }}<br />
+                        {{ config('shop.phone') }}
+                        @if (config('shop.kra_pin'))<br /><strong>PIN:</strong> {{ config('shop.kra_pin') }}@endif
                     </address>
                 </div>
                 <div class="col-6 text-end"> <strong>Invoiced To:</strong>
@@ -69,6 +71,7 @@
                         {{ $invoice->customer->address }}<br />
                         {{ $invoice->customer->location }}<br />
                         {{ $invoice->customer->phone }}
+                        @if ($invoice->customer->kra_pin)<br /><strong>PIN:</strong> {{ $invoice->customer->kra_pin }}@endif
                     </address>
                 </div>
             </div>
@@ -118,6 +121,24 @@
                     </div>
                 </div>
             </div>
+            @if ($invoice->isKraSigned())
+                <div class="row align-items-center mt-3">
+                    <div class="col-sm-9 text-1" style="word-break: break-all;">
+                        <strong>KRA eTIMS</strong><br />
+                        @if ($invoice->kra_cu_serial_no)CU Serial No: {{ $invoice->kra_cu_serial_no }}<br />@endif
+                        CU Invoice No: {{ $invoice->kra_cu_invoice_no }}<br />
+                        @if ($invoice->kra_signed_at)Signed: {{ $invoice->kra_signed_at->format('d/m/Y H:i:s') }}<br />@endif
+                        @if ($invoice->kra_internal_data)Internal Data: {{ $invoice->kra_internal_data }}<br />@endif
+                        @if ($invoice->kra_receipt_signature)Receipt Signature: {{ $invoice->kra_receipt_signature }}@endif
+                    </div>
+                    <div class="col-sm-3 text-center">
+                        {!! \App\Support\QrCode::svg($invoice->kra_qr_url, 120) !!}
+                        <div class="text-1">Scan to verify with KRA</div>
+                    </div>
+                </div>
+            @else
+                <p class="text-1 text-muted mt-3 mb-0">KRA eTIMS: pending</p>
+            @endif
         </main>
         <!-- Footer -->
         <footer class="text-center mt-4">
@@ -126,7 +147,8 @@
             <div class="btn-group btn-group-sm d-print-none"> <a href="javascript:window.print()"
                     class="btn btn-light border text-black-50 shadow-none"><i class="fa fa-print"></i> Print</a> <a
                     href="{{ route('invoices.download', $invoice) }}" class="btn btn-light border text-black-50 shadow-none"><i class="fa fa-download"></i>
-                    Download</a> </div>
+                    Download PDF</a> <a href="{{ route('invoices.receipt', $invoice) }}?print=1" target="_blank"
+                    class="btn btn-light border text-black-50 shadow-none"><i class="fa fa-receipt"></i> Receipt (80mm)</a> </div>
         </footer>
     </div>
 </body>

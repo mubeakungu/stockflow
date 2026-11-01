@@ -40,6 +40,10 @@
                         <input type="email" class="form-control" id="name" name="email" value="{{ $customer->email }}">
                     </div>
                     <div class="form-group">
+                        <label for="kra_pin">KRA PIN <small class="text-muted">(optional, printed on receipts)</small></label>
+                        <input type="text" class="form-control" id="kra_pin" name="kra_pin" value="{{ old('kra_pin', $customer->kra_pin) }}" placeholder="A123456789B" maxlength="11">
+                    </div>
+                    <div class="form-group">
                         <label for="exampleInputEmail1">Address</label>
                         <textarea name="address" id="" cols="30" rows="3"
                             class="form-control">{{ $customer->address }}</textarea>
