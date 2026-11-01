@@ -56,6 +56,8 @@
                     <td>
                         <a class="text-info" href="{{ route('invoices.show', $invoice->id) }}"><i
                                 class="feather icon-eye"></i> View</a><br>
+                        <a class="text-info" href="{{ route('invoices.receipt', $invoice->id) }}?print=1" target="_blank"><i
+                                class="feather icon-printer"></i> Receipt</a><br>
                         <a class="text-info" href="{{ route('invoices.edit', $invoice->id) }}"><i
                                 class="feather icon-edit"></i> Adjust Payment</a><br>
                         <a class="text-danger" href="javascript:{}" onclick="deleteFunction({{ $invoice->id }})"><i

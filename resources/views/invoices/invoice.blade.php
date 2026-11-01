@@ -56,11 +56,10 @@
                 <div class="col-6"> <strong>Pay To:</strong>
                     <address>
                         {{ $settings->shop_name }}<br />
-                        40600 <br />
-                        Siaya, Siaya-Road<br />
-                        berrylwasonga@gmail.com
-                        <br>
-                        0792827238
+                        {{ config('shop.address_line1') }}<br />
+                        {{ config('shop.address_line2') }}<br />
+                        {{ config('shop.email') }}<br />
+                        {{ config('shop.phone') }}
                     </address>
                 </div>
                 <div class="col-6 text-end"> <strong>Invoiced To:</strong>
@@ -126,7 +125,8 @@
             <div class="btn-group btn-group-sm d-print-none"> <a href="javascript:window.print()"
                     class="btn btn-light border text-black-50 shadow-none"><i class="fa fa-print"></i> Print</a> <a
                     href="{{ route('invoices.download', $invoice) }}" class="btn btn-light border text-black-50 shadow-none"><i class="fa fa-download"></i>
-                    Download</a> </div>
+                    Download PDF</a> <a href="{{ route('invoices.receipt', $invoice) }}?print=1" target="_blank"
+                    class="btn btn-light border text-black-50 shadow-none"><i class="fa fa-receipt"></i> Receipt (80mm)</a> </div>
         </footer>
     </div>
 </body>

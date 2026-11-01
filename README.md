@@ -38,7 +38,8 @@ This system serves as a **foundation for more advanced enterprise systems**, inc
 ### 🧾 Sales & Invoice System
 - Create invoices with multiple products
 - Automatic total calculations
-- Export invoices as PDF
+- Download invoices as PDF
+- Print 80mm thermal receipts (Invoice → **Receipt (80mm)**, or **Receipt** in the invoice list)
 
 ### 👥 Customer Management
 - Store customer data
@@ -159,3 +160,12 @@ Open http://127.0.0.1:8000 in your browser.
 - Password: `password`
 
 The sample data includes 4 products (cement, paint, iron sheets, a hammer), 2 customers and 2 suppliers, so you can create an invoice straight away under **Invoices → Create New Invoice**.
+
+## 🧾 Receipts
+Every sale creates an invoice. From the invoice page you can:
+- **Print** the full A4 invoice
+- **Download PDF** of the invoice
+- **Receipt (80mm)** opens a thermal-printer receipt and the print dialog. Choose your receipt printer, set the paper to 80mm and turn off headers/footers and margins.
+
+The shop name comes from **Settings**. To set the address, phone, email and receipt footer, uncomment the `SHOP_*` lines in `.env`.
+

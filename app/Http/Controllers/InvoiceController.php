@@ -6,6 +6,7 @@ use App\Models\Batch;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -111,17 +112,24 @@ class InvoiceController extends Controller
     public function download(Invoice $invoice)
     {
         $this->authorize('view', $invoice);
-        
-        $products = $invoice->items;
-        $html = view('invoices.invoice-download', compact('invoice', 'products'))->render();
-        $filename = 'invoice-' . $invoice->invoice_no . '.html';
 
-        return response($html, 200, [
-            'Content-Type' => 'text/html; charset=utf-8',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Content-Length' => strlen($html),
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
-        ]);
+        $products = $invoice->items;
+
+        return Pdf::loadView('invoices.invoice-pdf', compact('invoice', 'products'))
+            ->setPaper('a4')
+            ->download('invoice-' . $invoice->invoice_no . '.pdf');
+    }
+
+    /**
+     * 80mm thermal receipt. Add ?print=1 to open the print dialog automatically.
+     */
+    public function receipt(Invoice $invoice)
+    {
+        $this->authorize('view', $invoice);
+
+        $products = $invoice->items;
+
+        return view('invoices.receipt', compact('invoice', 'products'));
     }
 
     /**
